@@ -32,11 +32,15 @@ d1 = datetime.strptime(date1, '%Y/%m/%d')
 d2 = datetime.strptime(date2, '%Y/%m/%d')
 
 #generate random dates in range
-def random_dates_generator(start, end, repeat):
+def random_dates_generator(start, end, repeat: int, type: int):
     """
     This function will return a random datetime between two datetime 
     objects.
+    
+    type = -1: get rid of None values
+    type = 0: get rid of 0 values and None values
     """
+
     dates = []
     k = 0
     while k < repeat:
@@ -46,9 +50,16 @@ def random_dates_generator(start, end, repeat):
 
         date = datetime.strftime(start + timedelta(days=random_day), '%Y/%m/%d')
 
-        if not date in dates and not find_rain_data( date[0:4], int(date[5:7]), int(date[8:10]) ) == None:
-            dates.append(date)
-            k += 1         
+        check = find_rain_data( date[0:4], int(date[5:7]), int(date[8:10]) )
+
+        if type == -1:
+            if not date in dates and not check == None:
+                dates.append(date)
+                k += 1   
+        if type == 0:
+            if not date in dates and not check == None and not check == 0:
+                dates.append(date)
+                k += 1 
     return sorted(dates)
 
 #add random date to list
@@ -77,8 +88,12 @@ def find_rain_data(year: str, month: int, day: int):
                     return row[23].value
 
 
+type = int( input("(-1 to get rid of None) (0 to get rid of 0): ") )
 
-dates = random_dates_generator(d1, d2, number)
+while not type == -1 and not type == 0:
+    type = int( input("(-1 to get rid of None) (0 to get rid of 0): ") )
+
+dates = random_dates_generator(d1, d2, number, type)
 
 for date in dates:
     print(date)
