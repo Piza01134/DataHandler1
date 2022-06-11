@@ -8,21 +8,22 @@ file = open("dates.txt", "w")
 #load spreadsheet
 wb = load_workbook('Rain Spreadsheet.xlsx')
 
-sYear = input("Starting Year (-1 for default): ")
-if not sYear == "-1":
-    sMonth = input("Starting Month: ")
-    sDay = input("Starting Day: ")
-    eYear = input("Ending Year: ")
-    eMonth = input("Ending Month: ")
-    eDay = input("Ending Day: ")
-else:
-    #default
-    sYear = "1990"
-    sMonth = "1"
-    sDay = "1"
-    eYear = "2020"
-    eMonth = "12"
-    eDay = "31"
+while int(sYear) <= int(eYear) and int(sMonth) <= int(eMonth) and int(sDay) < int(eDay):
+    sYear = input("Starting Year (-1 for default): ")
+    if not sYear == "-1":
+        sMonth = input("Starting Month: ")
+        sDay = input("Starting Day: ")
+        eYear = input("Ending Year: ")
+        eMonth = input("Ending Month: ")
+        eDay = input("Ending Day: ")
+    else:
+        #default
+        sYear = "1990"
+        sMonth = "1"
+        sDay = "1"
+        eYear = "2020"
+        eMonth = "12"
+        eDay = "31"
 
 number = int(input("Number of dates: "))
 
@@ -117,13 +118,13 @@ def find_rain_data(year: str, month: int, day: int):
 
 type = int( input(""
                 + "0 to get rid of 0" + "\n"
-                + "1 - 4 for winter, spring, summer, fall" 
+                + "1, 2, 3, 4 for winter, spring, summer, fall" 
                 + ": ") )
 
 while not type in range(-1, 4):
     type = int( input(""
                 + "0 to get rid of 0" + "\n"
-                + "1 - 4 for winter, spring, summer, fall" 
+                + "1, 2, 3, 4 for winter, spring, summer, fall" 
                 + ": ") )
 
 dates = random_dates_generator(d1, d2, number, type)
