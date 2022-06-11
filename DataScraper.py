@@ -3,6 +3,7 @@ from random import randrange
 from datetime import datetime
 from datetime import timedelta
 
+file = open("dates.txt", "w")
 
 #load spreadsheet
 wb = load_workbook('Rain Spreadsheet.xlsx')
@@ -36,9 +37,6 @@ def random_dates_generator(start, end, repeat: int, type: int):
     """
     This function will return a random datetime between two datetime 
     objects.
-    
-    type = -1: get rid of None values
-    type = 0: get rid of 0 values and None values
     """
 
     dates = []
@@ -49,17 +47,46 @@ def random_dates_generator(start, end, repeat: int, type: int):
         random_day = randrange(int_delta)
 
         date = datetime.strftime(start + timedelta(days=random_day), '%Y/%m/%d')
+        raw_date = datetime.strptime(date, '%Y/%m/%d')
 
         check = find_rain_data( date[0:4], int(date[5:7]), int(date[8:10]) )
 
-        if type == -1:
-            if not date in dates and not check == None:
-                dates.append(date)
-                k += 1   
-        if type == 0:
-            if not date in dates and not check == None and not check == 0:
-                dates.append(date)
-                k += 1 
+        #ensure no repeats and not None value
+        if not date in dates and not check == None:
+            if type == 0: #get rid of 0 values
+                if not check == 0:
+                    dates.append(date)
+                    k += 1 
+            if type == 1: #get rid of 0 and only take Winter
+                year = raw_date.year
+                s = datetime(year - 1, 12, 1)
+                if (year % 400 == 0) or (year % 100 != 0) and (year % 4 == 0): #check if leap year
+                    e = datetime(year, 2, 29)
+                else: e = datetime(year, 2, 28)
+                if not check == 0 and s <= raw_date <= e:
+                    dates.append(date)
+                    k += 1
+            if type == 2: #get rid of 0 and only take Spring
+                year = raw_date.year
+                s = datetime(year, 3, 1)
+                e = datetime(year, 5, 31)
+                if not check == 0 and s <= raw_date <= e:
+                    dates.append(date)
+                    k += 1
+            if type == 3: #get rid of 0 and only take Summer
+                year = raw_date.year
+                s = datetime(year, 6, 1)
+                e = datetime(year, 8, 31)
+                if not check == 0 and s <= raw_date <= e:
+                    dates.append(date)
+                    k += 1
+            if type == 4: #get rid of 0 and only take Fall
+                year = raw_date.year
+                s = datetime(year, 9, 1)
+                e = datetime(year, 11, 30)
+                if not check == 0 and s <= raw_date <= e:
+                    dates.append(date)
+                    k += 1
     return sorted(dates)
 
 #add random date to list
@@ -88,18 +115,21 @@ def find_rain_data(year: str, month: int, day: int):
                     return row[23].value
 
 
-type = int( input("(-1 to get rid of None) (0 to get rid of 0): ") )
+type = int( input(""
+                + "0 to get rid of 0" + "\n"
+                + "1 - 4 for winter, spring, summer, fall" 
+                + ": ") )
 
-while not type == -1 and not type == 0:
-    type = int( input("(-1 to get rid of None) (0 to get rid of 0): ") )
+while not type in range(-1, 4):
+    type = int( input(""
+                + "0 to get rid of 0" + "\n"
+                + "1 - 4 for winter, spring, summer, fall" 
+                + ": ") )
 
 dates = random_dates_generator(d1, d2, number, type)
 
 for date in dates:
-    print(date)
-    print(date[0:4])
-    print(int(date[5:7]))
-    print(int(date[8:10]))
-    print( find_rain_data( date[0:4], int(date[5:7]), int(date[8:10]) ) )
+    file.write(date + "\n")
 
+file.close()
 
