@@ -8,22 +8,21 @@ file = open("dates.txt", "w")
 #load spreadsheet
 wb = load_workbook('Rain Spreadsheet.xlsx')
 
-while int(sYear) <= int(eYear) and int(sMonth) <= int(eMonth) and int(sDay) < int(eDay):
-    sYear = input("Starting Year (-1 for default): ")
-    if not sYear == "-1":
-        sMonth = input("Starting Month: ")
-        sDay = input("Starting Day: ")
-        eYear = input("Ending Year: ")
-        eMonth = input("Ending Month: ")
-        eDay = input("Ending Day: ")
-    else:
-        #default
-        sYear = "1990"
-        sMonth = "1"
-        sDay = "1"
-        eYear = "2020"
-        eMonth = "12"
-        eDay = "31"
+sYear = input("Starting Year (-1 for default): ")
+if not sYear == "-1":
+    sMonth = input("Starting Month: ")
+    sDay = input("Starting Day: ")
+    eYear = input("Ending Year: ")
+    eMonth = input("Ending Month: ")
+    eDay = input("Ending Day: ")
+else:
+    #default
+    sYear = "1990"
+    sMonth = "1"
+    sDay = "1"
+    eYear = "2020"
+    eMonth = "12"
+    eDay = "31"
 
 number = int(input("Number of dates: "))
 
