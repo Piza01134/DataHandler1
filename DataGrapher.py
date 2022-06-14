@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from openpyxl import load_workbook
-from scipy import stats
+from scipy.stats import norm
 
 #pipenv shell
 
@@ -32,25 +32,25 @@ def hist(x, y):
     show_graph("Amount", "Frequency", "Histogram")   
 
 #create normal probablity plot
-def npp(x, y):
-    if not len(x) == len(y):
-        return None
-    
-    x = sorted(x)
-    y = sorted(y)
+def npp(data):
+  
+    x = sorted(data)
+
 
     num = len(x)
 
-    temp = []
+    cum_prob = []
     z_scores = []
 
     for i in range(num):
-        temp.append( (i - 0.375) / (y[i] + 0.25) )
+        cum_prob.append( ((i + 1) - 0.5) / num )
 
-    z_scores = stats.zscore(temp)
+    for i in cum_prob:
+        z_scores.append( norm.ppf(i) )
+        print(norm.ppf(i))
 
     plt.scatter(x, z_scores)
-    show_graph("Dates", "Expected z-score", "Normal Probability Plot")
+    show_graph("Data", "Expected z-score", "Normal Probability Plot")
 
 #display graph
 def show_graph(x_label, y_label, title):
@@ -70,7 +70,7 @@ def show_graph(x_label, y_label, title):
 def graph_swtich(type, x, y):
     match type:
         case 0:
-            return npp(x, y)
+            return npp(y)
         case 1:
             return hist(x, y)
 
@@ -88,12 +88,12 @@ for date in dates:
     rain_amount.append( find_rain_data( date[0:4], int(date[5:7]), int(date[8:10]) ) )
 
 # x axis values
-#x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-x = dates
+x = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] 
+#x = dates
 
 # corresponding y axis values
-#y = [5, 5, 5, 5, 2000, 5, 5, 5, 26, 313, 20]
-y = rain_amount
+y = [5, 5, 5, 5, 2000, 5, 5, 5, 26, 313, 20]
+#y = rain_amount
 
 type = 1
 while not type == -1:
